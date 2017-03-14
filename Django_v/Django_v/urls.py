@@ -18,8 +18,8 @@ from django.contrib import admin
 from Django_v.views import tweeterAPI,search,geosearch
 
 urlpatterns = [
-    url(r'^$', tweeterAPI),
+    url(r'^$', tweeterAPI),                 #Main Page, including Google map and UI
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^ajax/search/$',search),
-    url(r'^ajax/geosearch/$',geosearch),
+    url(r'^ajax/search/$',search),     #Search based on keywords
+    url(r'^ajax/geosearch/$',geosearch),     #Search based on location
 ]
