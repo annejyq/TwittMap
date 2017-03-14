@@ -1,4 +1,4 @@
-
+# Declare relationship with html files and websites. Transmitting varibles between them.
 from django.shortcuts import render
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
@@ -19,7 +19,7 @@ def tweeterAPI(request):
 
 
 def search(request):
-    keyword = request.POST['x']
+    keyword = request.POST['x']     #Find twitter about keyword 'x'
     response = es_search(keyword)
     res = response['hits']['hits']
     res = json.dumps(res)
@@ -27,7 +27,7 @@ def search(request):
 
 
 def geosearch(request):
-    location = request.POST['location'].split(",")
+    location = request.POST['location'].split(",")     #Find twitter around a chosen location
     location[0] = float(location[0])
     location[1] = float(location[1])
     distance = request.POST['distance']
