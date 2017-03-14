@@ -1,0 +1,7 @@
+All files except 'requirements.txt', folder .ebextensions and folder templates in this folder are created when the application was first built by Django.
+
+requirements.txt determines which package to install on the EC2 instances that run this application.
+
+In folder .ebextensions, we stored the file django.config, setting specifies the location of the WSGI script that Elastic Beanstalk uses to start the application.
+
+ELB is built in the first Django folder, creating public URL: http://twittermap.nfvaftgznc.us-west-2.elasticbeanstalk.com/
