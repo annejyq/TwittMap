@@ -103,7 +103,7 @@ function Search() {
             data: {x,csrfmiddlewaretoken: '{{ csrf_token }}'},
             dataType: "json",
             success: function(data) {
-              for (var i=0; i<data.length; i++){
+              for (var i=0; i<data.length; i++){     //Pick out the useful information from returned data to be displayed in the map.
                 var latlng = new google.maps.LatLng(data[i]["_source"]["geo"][1],data[i]["_source"]["geo"][0]);
                 var conte = data[i]["_source"]["text"];
                 var name = data[i]["_source"]["user"];
@@ -162,7 +162,7 @@ function Search() {
  }
  
  // Map Reset
- function clearMap(){
+ function clearMap(){       //Remove all of the markers and empty the markers set
   for (var i = 0; i<markers.length; i++) {
     markers[i].setMap(null);
     updating=false;
@@ -170,12 +170,12 @@ function Search() {
   markers=[];
  }
 
- function placeMarker(map, latlng, name, conte) {
+ function placeMarker(map, latlng, name, conte) {   //Make marker on the map as well as the information to be shown when user cilcking on the markers
   var marker = new google.maps.Marker({
     position: latlng,
     map: map
   });
-  markers.push(marker);
+  markers.push(marker);         // Make up a set of markers to keep record of them so that thay can be removed easily
   google.maps.event.addListener(marker,'click',function() {
     var infowindow = new google.maps.InfoWindow({
       content: "@" + name + " said: " + conte
