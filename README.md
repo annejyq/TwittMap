@@ -1,8 +1,8 @@
 ## TwittMap
-Assignment 1 COMS E6998 Cloud Computing & Big Data
-Yunqing Jiang  UNI:yj2407
-Keyi Yang      UNI:ky2343
-http://twittermap.nfvaftgznc.us-west-2.elasticbeanstalk.com/
+1. Assignment 1 COMS E6998 Cloud Computing & Big Data
+2. Yunqing Jiang  UNI:yj2407
+3. Keyi Yang      UNI:ky2343
+4. http://twittermap.nfvaftgznc.us-west-2.elasticbeanstalk.com/
 
 ## Step 1: Create ElasticSearch Domain
 1. Run the following command:
