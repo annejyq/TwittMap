@@ -1,0 +1,5 @@
+endpoint = 'search-twittmap-z7jgounce6usksgcxt4kbsruvi.us-east-1.es.amazonaws.com'
+consumer_key = 'ylY13IOjpXr7SOfjHKwsi0B5q'
+consumer_secret = '5nFY7ulbZHKRzWbKxmqnyI0nGevgxrHuIvLDm16Nh6YhhErdQd'
+access_token = '765007753467363328-h66wqYE0pq4iL5fbDpLhtkKOiMJSA89'
+access_token_secret = 'bM3krkwgOK2pgnZV3iKjmiPnoorYMm2EYfV45JrsecVIA'

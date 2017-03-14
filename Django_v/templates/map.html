@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>TwittMap</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        #map {
+            height: 850px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--Google Map API-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3d31DDRuBs8KzAf3NbflYTIMVkq8O5CA&callback=initMap"></script>
+
+<!--Bootstrap Button-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!--Header and Buttons-->
+   <h2>Twitter Map</h2>
+   <select id="combo">
+            <option searchKeyword="1">Trump</option>
+            <option searchKeyword="2">Hillary</option>
+            <option searchKeyword="3">Freeze</option>
+            <option searchKeyword="4">Facebook</option>
+            <option searchKeyword="5">LinkedIn</option>
+            <option searchKeyword="6">Amazon</option>
+            <option searchKeyword="7">Google</option>
+            <option searchKeyword="8">Uber</option>
+            <option searchKeyword="9">Columbia</option>
+            <option searchKeyword="10">New York</option>
+        </select>
+        <button type="button" class="btn btn-primary" onclick="clearMap()">Reset</button>
+        <button type="button" class="btn btn-primary" onclick="Search()">Filter!</button>
+        <button type="button" class="btn btn-primary" onclick="Geosearch()">Start Geo Search</button>
+  <div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-default" onclick="toggle1()">Geo:On</button>
+  <button type="button" class="btn btn-default" onclick="toggle2()">Geo:Off</button>
+</div>
+<p id="geodemo"></p>
+
+<div id="map" style="width:100%;height:700px;"></div>
+
+<script>
+var map;
+var markers=[];
+var updating=false;
+var location_p;
+var geo_search_flag = false;
+
+//Google Map Initialization
+function initMap() {
+  var mapCanvas = document.getElementById("map");
+  var myCenter=new google.maps.LatLng(0.508742,-0.120850);
+  var mapOptions = {center: myCenter, zoom: 2};
+  map = new google.maps.Map(mapCanvas, mapOptions);
+  var array = [];
+  for (var i=0; i < array.length; i++) {
+    var latlng = new google.maps.LatLng(array[i][0],array[i][1]);
+    placeMarker(map, latlng);
+  }
+  map.addListener('click',function(e){
+    location_p = e.latLng.lng().toString()+", "+e.latLng.lat().toString();
+    //document.getElementById("map").innerHTML=location_p;
+  })
+}
+
+//GeoSearch Flag Control
+function toggle1() {
+  if (geo_search_flag) {
+    return
+  }else {
+    geo_search_flag = ! geo_search_flag;
+    //document.getElementById("geodemo").innerHTML = geo_search_flag;
+    return geo_search_flag
+  }   
+}
+
+function toggle2() {
+  if (geo_search_flag) {
+    geo_search_flag = ! geo_search_flag;
+    //document.getElementById("geodemo").innerHTML = geo_search_flag;
+    return geo_search_flag
+  }else {
+    return
+  }   
+}
+
+//Search by keywords
+function Search() {
+  clearMap();
+  var x = $('#combo').find(':selected').text();
+    $.ajax({
+            type: "POST",
+            url: '/ajax/search/',
+            data: {x,csrfmiddlewaretoken: '{{ csrf_token }}'},
+            dataType: "json",
+            success: function(data) {
+              for (var i=0; i<data.length; i++){
+                var latlng = new google.maps.LatLng(data[i]["_source"]["geo"][1],data[i]["_source"]["geo"][0]);
+                var conte = data[i]["_source"]["text"];
+                var name = data[i]["_source"]["user"];
+                placeMarker(map,latlng,name,conte);
+              }
+              updating=true;
+            },
+            error: function(data) {
+            document.getElementById("map").innerHTML = "error";
+          }
+        });
+  updating=true;
+  myTimer();
+}
+
+//Search by clicking geolocation on the map
+ function Geosearch() {
+    if (!geo_search_flag) {
+        return
+    }else{
+        clearMap();
+        var location = location_p; // Get location from Map Listener
+        var distance = "1000";     // Radius 1000km
+    $.ajax({
+        type:"POST",
+        url:'/ajax/geosearch/',
+        dataType:'json',
+        data: {location,distance,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data) {
+            for(i=0; i<data.length; i++){
+              var latlng = new google.maps.LatLng(data[i]["_source"]["geo"][1],data[i]["_source"]["geo"][0]);
+              var conte = data[i]["_source"]["text"];
+              var name = data[i]["_source"]["user"];
+              placeMarker(map,latlng,name,conte);
+            }
+        },
+        error: function(data,textStatus) {
+            data = JSON.parse(data)
+            document.getElementById("geodemo").innerHTML = "error";
+        }
+    });
+
+    }
+    
+}
+
+ var myVar = setInterval(myTimer ,10000);        //every 10 sec
+ function myTimer() {
+    if (updating) {
+     document.getElementById("map").innerHTML = "myTimer";
+  }
+  else {
+    continue;
+  }
+  return;
+ }
+ 
+ // Map Reset
+ function clearMap(){
+  for (var i = 0; i<markers.length; i++) {
+    markers[i].setMap(null);
+    updating=false;
+  }
+  markers=[];
+ }
+
+ function placeMarker(map, latlng, name, conte) {
+  var marker = new google.maps.Marker({
+    position: latlng,
+    map: map
+  });
+  markers.push(marker);
+  google.maps.event.addListener(marker,'click',function() {
+    var infowindow = new google.maps.InfoWindow({
+      content: "@" + name + " said: " + conte
+    });
+    infowindow.open(map,marker);
+  });
+ }
+</script>
+</body>
+</html>
+
